@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment - camillemormal.com</title>
+    <style>
+        body {
+            height: 100vh;
+            width: 100vw;
+            background-color: black;
+            margin: 0rem;
+            overflow: hidden;
+        }
+
+        #image-track>.image {
+            width: 40vmin;
+            height: 56vmin;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        #image-track {
+            display: flex;
+            gap: 4vmin;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(0%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+        <img class="image" src="./images/benjamin-voros-phIFdC6lA4E-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/daniel-leone-g30P1zcOzXo-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/jeremy-bishop-dR_q93lfaTw-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/kalen-emsley-Bkci_8qcdvQ-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/rohit-tandon-9wg5jCEPBsw-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/samuel-ferrara-1527pjeb6jg-unsplash.jpeg" draggable="false">
+        <img class="image" src="./images/john-towner-JgOeRuGD_Y4-unsplash.jpeg" draggable="false">
+    </div>
+
+</body>
+<script>
+    const track = document.getElementById("image-track")
+
+    window.onmousedown = e => {
+        track.dataset.mouseDownAt = e.clientX;
+
+    }
+
+    window.onmouseup = e => {
+        track.dataset.mouseDownAt = "0";
+        track.dataset.prevPercentage = track.dataset.percentage;
+    }
+
+    window.onmousemove = e => {
+        if (track.dataset.mouseDownAt == "0") {
+            return
+        }
+        const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX;
+        const maxDelta = window.innerWidth / 2;
+        const percentage = -(mouseDelta / maxDelta) * 100;
+        const nextPercentage = Math.max(-100, Math.min(0, parseFloat(track.dataset.prevPercentage) + percentage));
+
+        track.animate({
+            transform: `translate(${nextPercentage}%, -50%)`
+        }, {
+            duration: 1200,
+            fill: "forwards"
+        })
+        for (const image of track.getElementsByClassName("image")) {
+            image.animate({
+                objectPosition: `${nextPercentage + 100}% 50%`
+            }, {
+                duration: 1200,
+                fill: "forwards"
+            })
+        }
+        track.dataset.percentage = nextPercentage;
+    }
+
+</script>
+
+<!-- Following along coding tutorials from hyperplexed. Trying to replicate https://camillemormal.com/ -->
+</html>
